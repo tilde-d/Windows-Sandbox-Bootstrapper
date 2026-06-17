@@ -1,0 +1,52 @@
+<Configuration>
+
+  <!-- ===================================================== -->
+  <!-- Windows Sandbox configuration                          -->
+  <!-- ===================================================== -->
+
+  <!--
+    NETWORKING
+    Networking is ON by default in Windows Sandbox, which is what
+    you want for detonating phishing links and observing live
+    page/redirect behavior.
+
+    If you are examining a file you do NOT want to phone home
+    (e.g. a sample that may beacon), DISABLE networking by
+    UNCOMMENTING the line below. Note: with networking off, the
+    bootstrap script cannot download Chocolatey or any packages,
+    so provision online first, or pre-stage tools in the mapped folder.
+  -->
+  <!-- <Networking>Disable</Networking> -->
+
+  <!--
+    CLIPBOARD
+    Redirection ON makes it easy to paste suspicious URLs/snippets
+    in. Set to Disable if you want stronger host/guest isolation.
+  -->
+  <ClipboardRedirection>Default</ClipboardRedirection>
+
+  <!-- vGPU off: reduces guest to host attack surface; not needed for triage -->
+  <vGPU>Disable</vGPU>
+
+  <!-- Generous memory for browser detonation plus tools -->
+  <MemoryInMB>4096</MemoryInMB>
+
+  <!--
+    MAPPED FOLDER (read-only)
+    Host folder is mapped READ-ONLY so anything running in the
+    sandbox cannot write back to your host. Place bootstrap.ps1
+    (and any pre-staged samples/tools) in C:\WindowsSandbox on the host.
+  -->
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\WindowsSandbox</HostFolder>
+      <SandboxFolder>C:\WindowsSandbox</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+
+  <LogonCommand>
+    <Command>cmd.exe /c start /min powershell.exe -ExecutionPolicy Bypass -File C:\WindowsSandbox\bootstrap.ps1</Command>
+  </LogonCommand>
+
+</Configuration>
